@@ -49,4 +49,4 @@ def parse_response(recommendations):
     return jsonify(song_objects)
 
 if __name__ == '__main__':
-    api.run(debug=True)
+    api.run(debug=False)

@@ -3,8 +3,6 @@ import requests
 import config
 import base64
 
-api = Flask(__name__)
-
 @api.route('/', methods=['GET'])
 def home():
     return "<h1>Welcome to the FastTracks Microservice!</h1>"
@@ -47,6 +45,3 @@ def parse_response(recommendations):
         song_objects.append(item)
 
     return jsonify(song_objects)
-
-if __name__ == '__main__':
-    api.run(debug=False)

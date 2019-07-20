@@ -15,7 +15,7 @@ def parse_request():
 
 def get_recommended_songs(ids):
     params = {'seed_tracks': ids, 'limit': 10}
-    headers = {'Authorization': 'Bearer BQDPH3xjcCRoSZEleJtDrsOq6X21UHm6fQ8wKN_2UjSPFGSigWq3-QBDlSSNMizwpy5zElyeModIMty0xGzYuRoA-397MM5pL3_3pQVkTIt1NG3-RIH1nRz6yN3_IeHRMiHedkWgy7Pbo7naiCjxlgs0GFYVGjtvyQ'}
+    headers = {'Authorization': 'Bearer BQDupQgmnokrrHmkOuG8WOMVkXzeEJ_9p0g0CfvuuuzmlR6il5AW0eDcltiq77k3HvSdGeZVifXugrxocZJ9ScS0D4XayWObnqTJL-yB2GgmFjcgYCVDRxg6yY3VfY2xOvq0ywS2VZ5wE5mVLeCi94PDlySDYh_r6w'}
     songs = requests.get('https://api.spotify.com/v1/recommendations', headers = headers, params = params)
     return parse_response(songs.text)
 

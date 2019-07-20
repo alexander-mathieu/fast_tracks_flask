@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, json
 import requests
+import config
+import base64
 
 api = Flask(__name__)
 
@@ -13,9 +15,17 @@ def parse_request():
     ids = data['song_ids']
     return get_recommended_songs(ids)
 
+def get_token():
+    params = { 'grant_type': 'client_credentials' }
+    r = requests.post('https://accounts.spotify.com/api/token', auth = (config.spotify_client_id, config.spotify_client_secret), data = params)
+    json = r.json()
+    token = json['access_token']
+    return token
+
 def get_recommended_songs(ids):
-    params = {'seed_tracks': ids, 'limit': 10}
-    headers = {'Authorization': 'Bearer BQDupQgmnokrrHmkOuG8WOMVkXzeEJ_9p0g0CfvuuuzmlR6il5AW0eDcltiq77k3HvSdGeZVifXugrxocZJ9ScS0D4XayWObnqTJL-yB2GgmFjcgYCVDRxg6yY3VfY2xOvq0ywS2VZ5wE5mVLeCi94PDlySDYh_r6w'}
+    spotify_headers = get_token()
+    params = { 'seed_tracks': ids, 'limit': 10 }
+    headers = { 'Authorization': f'Bearer {spotify_headers}' }
     songs = requests.get('https://api.spotify.com/v1/recommendations', headers = headers, params = params)
     return parse_response(songs.text)
 

@@ -1,9 +1,14 @@
+import os
 from flask import Flask, request, jsonify, json
 import requests
 import config
 import base64
+import settings
 
 api = Flask(__name__)
+
+SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 
 @api.route('/', methods=['GET'])
 def home():
@@ -11,20 +16,20 @@ def home():
 
 @api.route('/api/v1/recommended', methods=['GET'])
 def parse_request():
-    data = request.form
-    ids = data['song_ids']
-    return get_recommended_songs(ids)
+    ids = request.args.get('song_ids')
+    limit = request.args.get('limit')
+    return get_recommended_songs(ids, limit)
 
 def get_token():
     params = { 'grant_type': 'client_credentials' }
-    r = requests.post('https://accounts.spotify.com/api/token', auth = (config.spotify_client_id, config.spotify_client_secret), data = params)
+    r = requests.post('https://accounts.spotify.com/api/token', auth = (SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET), data = params)
     json = r.json()
     token = json['access_token']
     return token
 
-def get_recommended_songs(ids):
+def get_recommended_songs(ids, limit):
     spotify_headers = get_token()
-    params = { 'seed_tracks': ids, 'limit': 10 }
+    params = { 'seed_tracks': ids.strip(), 'limit': limit }
     headers = { 'Authorization': f'Bearer {spotify_headers}' }
     songs = requests.get('https://api.spotify.com/v1/recommendations', headers = headers, params = params)
     return parse_response(songs.text)
